@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <map>
 
 namespace stan {
 
@@ -27,6 +28,10 @@ namespace io {
  * accessed through the floating-point methods.
  */
 class var_context {
+ private:
+  std::map<std::string, std::pair<std::vector<double>, std::vector<size_t>>> vars_r_;  // Holds data for reals
+  std::map<std::string, std::pair<std::vector<int>, std::vector<size_t>>> vars_i_;     // Holds data for doubles
+
  public:
   virtual ~var_context() {}
 
@@ -126,6 +131,18 @@ class var_context {
       const std::string& base_type,
       const std::vector<size_t>& dims_declared) const = 0;
 
+  void add_real_scalar(const std::string& name, double val) {
+    
+      vars_r_.emplace(name,
+                      std::pair<std::vector<double>, std::vector<size_t>>{{val},1});
+  }
+
+  void add_int_scalar(const std::string& name, int val) {
+    std::cout << vars_i_.size() << std::endl;
+    vars_i_.emplace(name,
+                    std::pair<std::vector<int>, std::vector<size_t>>{{val},1});
+    std::cout << vars_i_.size() << std::endl;
+  }
   /**
    * Append vector of dimensions to message string.
    *
